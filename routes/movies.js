@@ -13,13 +13,13 @@ router.get("/", function(req, res, next) {
         knex("movies")
             .where({ title: req.query.title })
             .then((data) => {
-                //must use %20 in the url: http://localhost:3000/movies?title=Midnight%20In%20Paris
+                //must use %20 in the url: http://localhost:3000/movies?title=Midnight%20In%20Paris  midnightinparis
                 res.status(200).json(data);
             });
     }
 });
 
-router.get("/:movieId", function(req, res, next) {
+router.get("/:movieId", function(req, res) {
     //res.send('this is a list of movies');
     console.log(typeof Number.parseInt(req.params.movieId));
     Number.isNaN(Number.parseInt(req.params.movieId)) ?
@@ -33,8 +33,16 @@ router.get("/:movieId", function(req, res, next) {
         });
 });
 
-router.post('/', function(req, res, next) {
-    knex("movies").insert(req.body).then(res.send("Movie Added"))
-})
+router.delete("/:movieId", function(req, res) {
+    console.log(parseInt(req.params.movieId));
+    knex("movies")
+        .where({ id: parseInt(req.params.movieId) })
+        .del()
+        .then(res.send("Movie Deleted"))
+});
+
+router.post("/", function(req, res) {
+    knex("movies").insert(req.body).then(res.send("Movie Added"));
+});
 
 module.exports = router;
